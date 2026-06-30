@@ -9,15 +9,23 @@
 <body>
 
   <header class="hero">
-    <img src="https://github.com/alcaeus.png" alt="Andreas Braun" class="hero__avatar">
-    <h1 class="hero__title">Farewell, Andreas! 👋</h1>
-    <p class="hero__subtitle">
-      You've been an incredible colleague, a thoughtful engineer, and a great friend.<br>
-      Here's what the team wants you to know before you go.
-    </p>
+    <div class="hero__overlay"></div>
+    <div class="hero__content">
+      <img src="https://github.com/alcaeus.png" alt="Andreas Braun" class="hero__avatar">
+      <h1 class="hero__title">Farewell, Andreas Braun!</h1>
+      <p class="hero__subtitle">
+        You've been an incredible colleague, a thoughtful engineer, and a great friend.<br>
+        Here's what the team wants you to know before you go.
+      </p>
+    </div>
+    <a class="hero__arrow" href="#cards" aria-label="Scroll to messages">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="6 9 12 15 18 9"/>
+      </svg>
+    </a>
   </header>
 
-  <main>
+  <main id="cards">
     {{ $cards := where site.RegularPages "Section" "cards" }}
     {{ $colors := slice "yellow" "blue" "green" "pink" "purple" "orange" }}
     {{ if $cards }}
@@ -61,6 +69,14 @@
     Want to leave a message?
     <a href="https://github.com/please/farewell/issues/new?template=farewell-card.yml">Add your card</a>.
   </footer>
+
+  <script>
+    const observer = new IntersectionObserver(
+      entries => entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } }),
+      { threshold: 0.1 }
+    );
+    document.querySelectorAll('.card').forEach(card => observer.observe(card));
+  </script>
 
 </body>
 </html>

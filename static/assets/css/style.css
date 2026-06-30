@@ -4,42 +4,100 @@
   padding: 0;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, sans-serif;
   background: #f0f2f5;
   color: #333;
-  min-height: 100vh;
 }
 
 /* ── Hero ── */
 
 .hero {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  height: 100vh;
+  min-height: 500px;
+  background-image: url('../hero.png');
+  background-size: cover;
+  background-position: center;
   text-align: center;
-  padding: 3rem 1.5rem 2.5rem;
-  background: #fff;
-  border-bottom: 1px solid #e0e0e0;
+  overflow: hidden;
+}
+
+.hero__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.15) 45%, transparent 70%);
+}
+
+.hero__content {
+  position: relative;
+  z-index: 1;
+  padding: 3rem 2rem 2rem;
+  max-width: 700px;
+  background: radial-gradient(ellipse at center, rgba(0,0,0,0.35) 0%, transparent 75%);
 }
 
 .hero__avatar {
-  width: 120px;
-  height: 120px;
+  width: 110px;
+  height: 110px;
   border-radius: 50%;
   border: 4px solid #fff;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
   margin-bottom: 1.25rem;
 }
 
+
 .hero__title {
-  font-size: 2.4rem;
+  font-size: 2.6rem;
   font-weight: 800;
-  color: #1a1a1a;
-  margin-bottom: 0.6rem;
+  color: #fff;
+  text-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.9),
+    0 4px 16px rgba(0, 0, 0, 0.7),
+    0 0 40px rgba(0, 0, 0, 0.5);
+  margin-bottom: 0.75rem;
+  line-height: 1.15;
 }
 
 .hero__subtitle {
   font-size: 1.05rem;
-  color: #666;
+  color: #fff;
   line-height: 1.7;
+  text-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.9),
+    0 3px 10px rgba(0, 0, 0, 0.6);
+}
+
+/* ── Scroll arrow ── */
+
+.hero__arrow {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+  color: #fff;
+  text-decoration: none;
+  animation: bounce 2s ease-in-out infinite;
+}
+
+.hero__arrow svg {
+  width: 56px;
+  height: 56px;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.7));
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50%       { transform: translateX(-50%) translateY(12px); }
 }
 
 /* ── Masonry columns ── */
@@ -49,25 +107,47 @@ body {
   column-gap: 1.5rem;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem 1.5rem 3rem;
+  padding: 2.5rem 1.5rem 3rem;
 }
 
-/* ── Card ── */
+/* ── Card — scroll reveal ── */
 
 .card {
+  --r: -1deg;
   break-inside: avoid;
   display: inline-block;
   width: 100%;
-  margin-bottom: 1.5rem;
-  border-radius: 12px;
+  margin-bottom: 2rem;
+  border: 2.5px solid #1a1a1a;
+  border-radius: 255px 12px 230px 8px / 8px 230px 12px 255px;
   padding: 1.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 5px 5px 0 #1a1a1a;
+  opacity: 0;
+  transform: rotate(var(--r)) translateY(24px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.card:nth-child(2n) {
+  --r: 0.8deg;
+  border-radius: 12px 255px 8px 230px / 230px 8px 255px 12px;
+}
+.card:nth-child(3n) {
+  --r: -1.5deg;
+  border-radius: 230px 8px 255px 12px / 12px 255px 8px 230px;
+}
+.card:nth-child(4n) {
+  --r: 0.5deg;
+  border-radius: 8px 230px 12px 255px / 255px 12px 230px 8px;
+}
+
+.card.visible {
+  opacity: 1;
+  transform: rotate(var(--r)) translateY(0);
 }
 
 .card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  transform: rotate(var(--r)) translateY(-3px);
+  box-shadow: 7px 7px 0 #1a1a1a;
 }
 
 .card--yellow { background: #fff9c4; }
@@ -83,13 +163,11 @@ body {
   margin-bottom: 0.75rem;
 }
 
+/* ── Card photo ── */
+
 .card__photo {
-  margin-bottom: 1rem;
-  border-radius: 8px;
+  margin: -1.5rem -1.5rem 1rem;
   overflow: hidden;
-  margin-left: -1.5rem;
-  margin-right: -1.5rem;
-  margin-top: -1.5rem;
 }
 
 .card__photo img {
@@ -98,6 +176,8 @@ body {
   max-height: 240px;
   object-fit: cover;
 }
+
+/* ── Card message ── */
 
 .card__message {
   font-size: 0.95rem;
@@ -109,6 +189,8 @@ body {
 .card__message p { margin-bottom: 0.5rem; }
 .card__message p:last-child { margin-bottom: 0; }
 .card__message img { max-width: 100%; border-radius: 6px; }
+
+/* ── Card author ── */
 
 .card__author {
   display: flex;
