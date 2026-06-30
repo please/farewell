@@ -1,6 +1,8 @@
 title: "Farewell, Andreas Braun!"
 description: "A farewell board from your MongoDB colleagues."
 markdown: kramdown
+baseurl: "/farewell"
+url: "https://please.github.io"
 
 repository_url: "https://github.com/please/farewell"
 

@@ -8,7 +8,7 @@ Colleagues leave messages by opening a Pull Request — each card is a single Ma
 
 > **Set up GitHub Pages first** (see below), then update this link.
 >
-> `https://YOUR-USERNAME.github.io/YOUR-REPO/`
+> `https://please.github.io/farewell/`
 
 ## How to add a card
 
