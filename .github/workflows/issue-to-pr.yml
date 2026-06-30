@@ -150,8 +150,12 @@ jobs:
               ...(existingSha ? { sha: existingSha } : {}),
             });
 
-            // Create PR only on first submission
-            if (!isEdit) {
+            // Create PR if none exists yet for this branch
+            const existingPRs = await github.rest.pulls.list({
+              owner, repo, head: `${owner}:${branch}`, state: 'open',
+            });
+
+            if (existingPRs.data.length === 0) {
               const { data: pr } = await github.rest.pulls.create({
                 owner, repo,
                 title: `Add farewell card from ${author}`,
