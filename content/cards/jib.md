@@ -1,7 +1,7 @@
 ---
 author: "Jib"
 github: Jibola
-color: Orange
+color: orange
 ---
 
 Sad to see you go, but I'm happy it was for a big moment in your life. Thanks for all of the 1:1s where we could just share our thoughts freely; I'll cherish them dearly. 

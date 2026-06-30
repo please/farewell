@@ -70,7 +70,7 @@ jobs:
             const lines = ['---', `author: "${author}"`];
             if (role)   lines.push(`role: "${role}"`);
             if (ghUser) lines.push(`github: ${ghUser}`);
-            if (color)    lines.push(`color: ${color}`);
+            if (color)    lines.push(`color: ${color.toLowerCase()}`);
             if (emoji)    lines.push(`emoji: "${emoji}"`);
 
             // Get main SHA and create/update branch before downloading the image
