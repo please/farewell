@@ -1,0 +1,111 @@
+name: Create card PR from issue
+
+on:
+  issues:
+    types: [opened, edited]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  create-card:
+    if: contains(github.event.issue.labels.*.name, 'card')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const body = context.payload.issue.body || '';
+            const issueNumber = context.issue.number;
+            const isEdit = context.payload.action === 'edited';
+            const { owner, repo } = context.repo;
+
+            function parseSection(body, heading) {
+              const escaped = heading.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+              const regex = new RegExp(
+                `### ${escaped}\\r?\\n\\r?\\n([\\s\\S]*?)(?=\\r?\\n### |$)`
+              );
+              const match = body.match(regex);
+              const val = match ? match[1].trim() : '';
+              return val === '_No response_' ? '' : val;
+            }
+
+            const author  = parseSection(body, 'Your name');
+            const role    = parseSection(body, 'Your role');
+            const ghUser  = parseSection(body, 'Your GitHub username');
+            const color   = parseSection(body, 'Card color');
+            const emoji   = parseSection(body, 'Emoji');
+            const message = parseSection(body, 'Your message');
+
+            if (!author || !message) {
+              console.log('Missing required fields, skipping.');
+              return;
+            }
+
+            const branch   = `card/issue-${issueNumber}`;
+            const filePath = `content/cards/card-${issueNumber}.md`;
+
+            const lines = ['---', `author: "${author}"`];
+            if (role)   lines.push(`role: "${role}"`);
+            if (ghUser) lines.push(`github: ${ghUser}`);
+            if (color)  lines.push(`color: ${color}`);
+            if (emoji)  lines.push(`emoji: "${emoji}"`);
+            lines.push('---', '', message, '');
+            const cardContent = lines.join('\n');
+            const encoded = Buffer.from(cardContent).toString('base64');
+
+            // Get main SHA
+            const { data: mainRef } = await github.rest.git.getRef({
+              owner, repo, ref: 'heads/main',
+            });
+
+            // Create or reset branch
+            try {
+              await github.rest.git.createRef({
+                owner, repo,
+                ref: `refs/heads/${branch}`,
+                sha: mainRef.object.sha,
+              });
+            } catch (e) {
+              if (e.status !== 422) throw e;
+              // Branch exists on edit — just update the file in place
+            }
+
+            // Get existing file SHA if any
+            let existingSha;
+            try {
+              const { data } = await github.rest.repos.getContent({
+                owner, repo, path: filePath, ref: branch,
+              });
+              existingSha = data.sha;
+            } catch (_) {}
+
+            await github.rest.repos.createOrUpdateFileContents({
+              owner, repo,
+              path: filePath,
+              message: `${isEdit ? 'Update' : 'Add'} farewell card from ${author} (#${issueNumber})`,
+              content: encoded,
+              branch,
+              ...(existingSha ? { sha: existingSha } : {}),
+            });
+
+            // Create PR only on first submission
+            if (!isEdit) {
+              const { data: pr } = await github.rest.pulls.create({
+                owner, repo,
+                title: `Add farewell card from ${author}`,
+                head: branch,
+                base: 'main',
+                body: `Resolves #${issueNumber}`,
+              });
+
+              await github.rest.issues.createComment({
+                owner, repo,
+                issue_number: issueNumber,
+                body: `Thanks ${author}! 🎉 Your card has been submitted (PR #${pr.number}). It will appear on the board once approved.\n\nNeed to change something? Simply edit this issue and your card will be updated automatically.`,
+              });
+            }

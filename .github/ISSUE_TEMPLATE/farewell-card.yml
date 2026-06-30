@@ -1,0 +1,54 @@
+name: Leave a farewell message
+description: Add your card to the farewell board for Andreas Braun
+labels: [card]
+body:
+  - type: input
+    id: author
+    attributes:
+      label: Your name
+      placeholder: Jane Smith
+    validations:
+      required: true
+
+  - type: input
+    id: role
+    attributes:
+      label: Your role
+      placeholder: Senior Software Engineer, MongoDB
+
+  - type: input
+    id: github
+    attributes:
+      label: Your GitHub username
+      description: Used to display your profile picture on the card.
+      placeholder: janesmith
+
+  - type: dropdown
+    id: color
+    attributes:
+      label: Card color
+      options:
+        - yellow
+        - blue
+        - green
+        - pink
+        - purple
+        - orange
+    validations:
+      required: true
+
+  - type: input
+    id: emoji
+    attributes:
+      label: Emoji
+      description: Optional — appears at the top of your card.
+      placeholder: 🎉
+
+  - type: textarea
+    id: message
+    attributes:
+      label: Your message
+      description: Write as much or as little as you like. Markdown is supported.
+      placeholder: Andreas, it's been a pleasure working with you...
+    validations:
+      required: true

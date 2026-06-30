@@ -1,69 +1,38 @@
 # How to add your card
 
-Adding your farewell message to Andreas is done by opening a Pull Request with a new file. No command line required — you can do it entirely from GitHub's web interface.
+## Option 1 — Fill in the form (easiest, no GitHub knowledge required)
+
+[**→ Open the card form**](../../issues/new?template=farewell-card.yml)
+
+Fill in your name, a message, and optionally your role, GitHub username, color, and emoji. Submit the issue — a pull request will be created automatically. No fork needed.
+
+Need to change something? Edit the issue and your card will be updated automatically.
 
 ---
 
-## Option 1 — GitHub web interface (easiest)
+## Option 2 — Create a file directly (for git users)
 
-1. **Navigate to the `content/cards/` folder** in this repository on GitHub.
+1. **Navigate to the [`content/cards/`](content/cards/) folder** on GitHub.
 
 2. Click **"Add file" → "Create new file"**.
 
 3. Name your file `your-name.md` (e.g. `alice-smith.md`). Use only lowercase letters, numbers, and hyphens.
 
-4. **Copy the template below** into the editor and fill in your details:
+4. **Copy the template below** and fill in your details:
 
    ```markdown
    ---
    author: Your Full Name
    role: Your Job Title           # optional
    github: your-github-username   # optional — displays your profile picture
-   color: yellow                  # choose: yellow | blue | green | pink | purple | orange
-   emoji: 🎉                      # optional — appears at the top of your card
+   color: yellow                  # yellow | blue | green | pink | purple | orange
+   emoji: 🎉                      # optional
    ---
 
    Write your message to Andreas here.
-
-   You can write multiple paragraphs — each one will be separated automatically.
    ```
 
-5. Scroll down and click **"Propose new file"**.
-
-6. On the next screen, click **"Create pull request"**. Done!
-
----
-
-## Option 2 — Git workflow
-
-```bash
-# 1. Fork & clone the repository
-git clone https://github.com/please/farewell.git
-cd farewell
-
-# 2. Create a branch
-git checkout -b card/your-name
-
-# 3. Create your card file (copy the template)
-cat > content/cards/your-name.md << 'EOF'
----
-author: Your Full Name
-role: Your Job Title
-github: your-github-username
-color: yellow
-emoji: 🎉
----
-
-Write your message to Andreas here.
-EOF
-
-# 4. Commit and push
-git add content/cards/your-name.md
-git commit -m "Add farewell card from Your Name"
-git push origin card/your-name
-
-# 5. Open a Pull Request on GitHub
-```
+5. Click **"Propose new file"** then **"Create pull request"**.
 
 ---
 
@@ -78,12 +47,3 @@ git push origin card/your-name
 | `emoji`  | No       | A single emoji shown at the top of your card |
 
 **Available colors:** `yellow` · `blue` · `green` · `pink` · `purple` · `orange`
-
----
-
-## Tips
-
-- Your message can be as long or as short as you like.
-- Markdown is supported: **bold**, *italic*, line breaks between paragraphs.
-- If you skip `color`, one will be assigned automatically.
-- Your card will appear on the site as soon as the PR is merged.
