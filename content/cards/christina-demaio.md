@@ -3,6 +3,7 @@ author: "Christina DeMaio"
 role: "Executive Assistant"
 github: ChristinaDem
 color: pink
+photo: "assets/cards/christina-demaio.png"
 ---
 
 Andreas,
