@@ -83,6 +83,22 @@ body {
   margin-bottom: 0.75rem;
 }
 
+.card__photo {
+  margin-bottom: 1rem;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-left: -1.5rem;
+  margin-right: -1.5rem;
+  margin-top: -1.5rem;
+}
+
+.card__photo img {
+  width: 100%;
+  display: block;
+  max-height: 240px;
+  object-fit: cover;
+}
+
 .card__message {
   font-size: 0.95rem;
   line-height: 1.75;

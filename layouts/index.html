@@ -28,6 +28,11 @@
             {{ with $card.Params.emoji }}
               <div class="card__emoji">{{ . }}</div>
             {{ end }}
+            {{ with $card.Params.photo }}
+              <div class="card__photo">
+                <img src="{{ . }}" alt="Photo from {{ $card.Params.author }}">
+              </div>
+            {{ end }}
             <div class="card__message">{{ $card.Content }}</div>
             <footer class="card__author">
               {{ with $card.Params.github }}

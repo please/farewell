@@ -46,6 +46,13 @@ body:
       placeholder: 🎉
 
   - type: textarea
+    id: photo
+    attributes:
+      label: Photo
+      description: Optional — drag & drop or paste an image (screenshot, selfie, meme…). GitHub will host it automatically.
+      placeholder: Drag an image here or paste it with Ctrl+V / ⌘+V
+
+  - type: textarea
     id: message
     attributes:
       label: Your message

@@ -41,6 +41,10 @@ jobs:
             const emoji   = parseSection(body, 'Emoji');
             const message = parseSection(body, 'Your message');
 
+            const photoField = parseSection(body, 'Photo');
+            const photoMatch = photoField.match(/!\[.*?\]\((https?:\/\/[^)]+)\)/);
+            const photo = photoMatch ? photoMatch[1] : '';
+
             if (!author || !message) {
               console.log('Missing required fields, skipping.');
               return;
@@ -67,6 +71,7 @@ jobs:
             if (ghUser) lines.push(`github: ${ghUser}`);
             if (color)  lines.push(`color: ${color}`);
             if (emoji)  lines.push(`emoji: "${emoji}"`);
+            if (photo)  lines.push(`photo: "${photo}"`);
             lines.push('---', '', message, '');
             const cardContent = lines.join('\n');
             const encoded = Buffer.from(cardContent).toString('base64');
