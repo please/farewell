@@ -1,0 +1,15 @@
+{
+    "name": "please/farewell",
+    "description": "Farewell board for Andreas Braun",
+    "type": "project",
+    "require": {
+        "php": ">=8.2",
+        "twig/twig": "^3.0",
+        "league/commonmark": "^2.0",
+        "symfony/yaml": "^7.0"
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true
+    }
+}

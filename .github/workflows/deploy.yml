@@ -19,12 +19,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/configure-pages@v5
-      - uses: actions/jekyll-build-pages@v1
+
+      - uses: shivammathur/setup-php@v2
         with:
-          source: ./
-          destination: ./_site
+          php-version: '8.3'
+          tools: composer
+
+      - uses: actions/cache@v4
+        with:
+          path: vendor
+          key: composer-${{ hashFiles('composer.lock') }}
+          restore-keys: composer-
+
+      - run: composer install --no-dev --prefer-dist --optimize-autoloader
+
+      - run: php build.php
+        env:
+          BASE_URL: /farewell
+
       - uses: actions/upload-pages-artifact@v3
+        with:
+          path: public/
 
   deploy:
     runs-on: ubuntu-latest
