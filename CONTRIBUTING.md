@@ -44,9 +44,18 @@ cd farewell
 # 2. Create a branch
 git checkout -b card/your-name
 
-# 3. Create your card file
-cp content/cards/jerome-tamarelle.md content/cards/your-name.md
-# Edit content/cards/your-name.md with your details
+# 3. Create your card file (copy the template)
+cat > content/cards/your-name.md << 'EOF'
+---
+author: Your Full Name
+role: Your Job Title
+github: your-github-username
+color: yellow
+emoji: 🎉
+---
+
+Write your message to Andreas here.
+EOF
 
 # 4. Commit and push
 git add content/cards/your-name.md
