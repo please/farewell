@@ -38,7 +38,7 @@
             {{ end }}
             {{ with $card.Params.photo }}
               <div class="card__photo">
-                <img src="{{ . }}" alt="Photo from {{ $card.Params.author }}">
+                <img src="{{ if hasPrefix . "http" }}{{ . }}{{ else }}{{ . | absURL }}{{ end }}" alt="Photo from {{ $card.Params.author }}">
               </div>
             {{ end }}
             <div class="card__message">{{ $card.Content }}</div>

@@ -43,7 +43,7 @@ jobs:
 
             const photoField = parseSection(body, 'Photo');
             const photoMatch = photoField.match(/!\[.*?\]\((https?:\/\/[^)]+)\)/);
-            const photo = photoMatch ? photoMatch[1] : '';
+            const photoUrl = photoMatch ? photoMatch[1] : '';
 
             if (!author || !message) {
               console.log('Missing required fields, skipping.');
@@ -69,19 +69,14 @@ jobs:
             const lines = ['---', `author: "${author}"`];
             if (role)   lines.push(`role: "${role}"`);
             if (ghUser) lines.push(`github: ${ghUser}`);
-            if (color)  lines.push(`color: ${color}`);
-            if (emoji)  lines.push(`emoji: "${emoji}"`);
-            if (photo)  lines.push(`photo: "${photo}"`);
-            lines.push('---', '', message, '');
-            const cardContent = lines.join('\n');
-            const encoded = Buffer.from(cardContent).toString('base64');
+            if (color)    lines.push(`color: ${color}`);
+            if (emoji)    lines.push(`emoji: "${emoji}"`);
 
-            // Get main SHA
+            // Get main SHA and create/update branch before downloading the image
             const { data: mainRef } = await github.rest.git.getRef({
               owner, repo, ref: 'heads/main',
             });
 
-            // Create or reset branch
             try {
               await github.rest.git.createRef({
                 owner, repo,
@@ -90,10 +85,51 @@ jobs:
               });
             } catch (e) {
               if (e.status !== 422) throw e;
-              // Branch exists on edit — just update the file in place
             }
 
-            // Get existing file SHA if any
+            const commitAuthorLogin = ghUser || context.payload.issue.user.login;
+            const commitAuthor = {
+              name: author,
+              email: `${commitAuthorLogin}@users.noreply.github.com`,
+            };
+
+            // Download and commit the photo if provided
+            if (photoUrl) {
+              const imgResponse = await fetch(photoUrl);
+              const contentType = imgResponse.headers.get('content-type') || '';
+              const ext = contentType.includes('png') ? 'png'
+                        : contentType.includes('gif') ? 'gif'
+                        : contentType.includes('webp') ? 'webp' : 'jpg';
+              const imgPath = `static/assets/cards/${slug}.${ext}`;
+              const imgBuffer = Buffer.from(await imgResponse.arrayBuffer());
+
+              let imgSha;
+              try {
+                const { data } = await github.rest.repos.getContent({
+                  owner, repo, path: imgPath, ref: branch,
+                });
+                imgSha = data.sha;
+              } catch (_) {}
+
+              await github.rest.repos.createOrUpdateFileContents({
+                owner, repo,
+                path: imgPath,
+                message: `Add photo for ${author} (#${issueNumber})`,
+                content: imgBuffer.toString('base64'),
+                branch,
+                author: commitAuthor,
+                committer: commitAuthor,
+                ...(imgSha ? { sha: imgSha } : {}),
+              });
+
+              lines.push(`photo: "assets/cards/${slug}.${ext}"`);
+            }
+
+            lines.push('---', '', message, '');
+            const cardContent = lines.join('\n');
+            const encoded = Buffer.from(cardContent).toString('base64');
+
+            // Get existing card file SHA if any
             let existingSha;
             try {
               const { data } = await github.rest.repos.getContent({
@@ -101,12 +137,6 @@ jobs:
               });
               existingSha = data.sha;
             } catch (_) {}
-
-            const commitAuthorLogin = ghUser || context.payload.issue.user.login;
-            const commitAuthor = {
-              name: author,
-              email: `${commitAuthorLogin}@users.noreply.github.com`,
-            };
 
             await github.rest.repos.createOrUpdateFileContents({
               owner, repo,
