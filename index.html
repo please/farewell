@@ -1,0 +1,63 @@
+---
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ site.title }}</title>
+  <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
+</head>
+<body>
+
+  <header class="hero">
+    <img src="https://github.com/alcaeus.png" alt="Andreas Braun" class="hero__avatar">
+    <h1 class="hero__title">Farewell, Andreas! 👋</h1>
+    <p class="hero__subtitle">
+      You've been an incredible colleague, a thoughtful engineer, and a great friend.<br>
+      Here's what the team wants you to know before you go.
+    </p>
+  </header>
+
+  <main>
+    {% assign colors = "yellow,blue,green,pink,purple,orange" | split: "," %}
+    {% if site.cards.size > 0 %}
+      <div class="cards-grid">
+        {% for card in site.cards %}
+          {% assign color_index = forloop.index0 | modulo: 6 %}
+          {% assign card_color = card.color | default: colors[color_index] %}
+          <article class="card card--{{ card_color }}">
+            {% if card.emoji %}
+              <div class="card__emoji">{{ card.emoji }}</div>
+            {% endif %}
+            <div class="card__message">{{ card.content }}</div>
+            <footer class="card__author">
+              {% if card.github %}
+                <img
+                  src="https://github.com/{{ card.github }}.png?size=40"
+                  alt="{{ card.author }}"
+                  class="card__avatar"
+                >
+              {% endif %}
+              <div class="card__author-info">
+                <strong>{{ card.author }}</strong>
+                {% if card.role %}
+                  <span class="card__role">{{ card.role }}</span>
+                {% endif %}
+              </div>
+            </footer>
+          </article>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="empty-state">No cards yet — be the first to add one!</p>
+    {% endif %}
+  </main>
+
+  <footer class="site-footer">
+    Want to leave a message?
+    <a href="{{ site.repository_url }}/blob/main/CONTRIBUTING.md">See how to add your card</a>.
+  </footer>
+
+</body>
+</html>

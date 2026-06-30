@@ -1,0 +1,9 @@
+title: "Farewell, Andreas Braun!"
+description: "A farewell board from your MongoDB colleagues."
+markdown: kramdown
+
+repository_url: "https://github.com/please/farewell"
+
+collections:
+  cards:
+    output: false
