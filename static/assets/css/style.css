@@ -92,6 +92,7 @@ body {
 
 .card__message p { margin-bottom: 0.5rem; }
 .card__message p:last-child { margin-bottom: 0; }
+.card__message img { max-width: 100%; border-radius: 6px; }
 
 .card__author {
   display: flex;
