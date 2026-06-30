@@ -52,8 +52,15 @@ jobs:
               title: `Farewell card from ${author}`,
             });
 
+            const slug = author
+              .normalize('NFD').replace(/[̀-ͯ]/g, '')
+              .toLowerCase()
+              .replace(/[^a-z0-9]+/g, '-')
+              .replace(/^-|-$/g, '')
+              || `card-${issueNumber}`;
+
             const branch   = `card/issue-${issueNumber}`;
-            const filePath = `content/cards/card-${issueNumber}.md`;
+            const filePath = `content/cards/${slug}.md`;
 
             const lines = ['---', `author: "${author}"`];
             if (role)   lines.push(`role: "${role}"`);
