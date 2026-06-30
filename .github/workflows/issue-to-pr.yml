@@ -97,12 +97,20 @@ jobs:
               existingSha = data.sha;
             } catch (_) {}
 
+            const commitAuthorLogin = ghUser || context.payload.issue.user.login;
+            const commitAuthor = {
+              name: author,
+              email: `${commitAuthorLogin}@users.noreply.github.com`,
+            };
+
             await github.rest.repos.createOrUpdateFileContents({
               owner, repo,
               path: filePath,
               message: `${isEdit ? 'Update' : 'Add'} farewell card from ${author} (#${issueNumber})`,
               content: encoded,
               branch,
+              author: commitAuthor,
+              committer: commitAuthor,
               ...(existingSha ? { sha: existingSha } : {}),
             });
 
