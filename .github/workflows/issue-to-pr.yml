@@ -27,11 +27,11 @@ jobs:
             function parseSection(body, heading) {
               const escaped = heading.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
               const regex = new RegExp(
-                `### ${escaped}\\r?\\n\\r?\\n([\\s\\S]*?)(?=\\r?\\n### |$)`
+                `#{2,3} ${escaped}\\r?\\n\\r?\\n([\\s\\S]*?)(?=\\r?\\n#{2,3} |$)`
               );
               const match = body.match(regex);
               const val = match ? match[1].trim() : '';
-              return val === '_No response_' ? '' : val;
+              return (val === '_No response_' || val === 'No response') ? '' : val;
             }
 
             const author  = parseSection(body, 'Your name');
