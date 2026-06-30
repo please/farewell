@@ -1,5 +1,6 @@
 name: Leave a farewell message
 description: Add your card to the farewell board for Andreas Braun
+title: "Farewell card"
 labels: [card]
 body:
   - type: input

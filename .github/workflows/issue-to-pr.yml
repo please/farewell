@@ -46,6 +46,12 @@ jobs:
               return;
             }
 
+            await github.rest.issues.update({
+              owner, repo,
+              issue_number: issueNumber,
+              title: `Farewell card from ${author}`,
+            });
+
             const branch   = `card/issue-${issueNumber}`;
             const filePath = `content/cards/card-${issueNumber}.md`;
 
