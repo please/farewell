@@ -6,7 +6,7 @@ Adding your farewell message to Andreas is done by opening a Pull Request with a
 
 ## Option 1 — GitHub web interface (easiest)
 
-1. **Navigate to the `_cards/` folder** in this repository on GitHub.
+1. **Navigate to the `content/cards/` folder** in this repository on GitHub.
 
 2. Click **"Add file" → "Create new file"**.
 
@@ -38,18 +38,18 @@ Adding your farewell message to Andreas is done by opening a Pull Request with a
 
 ```bash
 # 1. Fork & clone the repository
-git clone https://github.com/YOUR-USERNAME/THIS-REPO.git
-cd THIS-REPO
+git clone https://github.com/please/farewell.git
+cd farewell
 
 # 2. Create a branch
 git checkout -b card/your-name
 
 # 3. Create your card file
-cp _cards/jerome-tamarelle.md _cards/your-name.md
-# Edit _cards/your-name.md with your details
+cp content/cards/jerome-tamarelle.md content/cards/your-name.md
+# Edit content/cards/your-name.md with your details
 
 # 4. Commit and push
-git add _cards/your-name.md
+git add content/cards/your-name.md
 git commit -m "Add farewell card from Your Name"
 git push origin card/your-name
 

@@ -20,22 +20,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: shivammathur/setup-php@v2
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v3
         with:
-          php-version: '8.3'
-          tools: composer
+          hugo-version: '0.163.3'
 
-      - uses: actions/cache@v4
-        with:
-          path: vendor
-          key: composer-${{ hashFiles('composer.lock') }}
-          restore-keys: composer-
-
-      - run: composer install --no-dev --prefer-dist --optimize-autoloader
-
-      - run: php build.php
-        env:
-          BASE_URL: /farewell
+      - name: Build
+        run: hugo --minify
 
       - uses: actions/upload-pages-artifact@v3
         with:

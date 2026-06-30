@@ -1,7 +1,7 @@
 ---
 author: Jérôme Tamarelle
 role: Senior Software Engineer, MongoDB
-github: jmikola
+github: GromNaN
 color: blue
 emoji: 🚀
 ---

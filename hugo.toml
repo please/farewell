@@ -1,0 +1,5 @@
+baseURL = "https://please.github.io/farewell/"
+locale = "en"
+title = "Farewell, Andreas Braun!"
+
+disableKinds = ["taxonomy", "term"]

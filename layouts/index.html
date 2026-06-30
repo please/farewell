@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ site.Title }}</title>
+  <link rel="stylesheet" href="{{ "assets/css/style.css" | absURL }}">
+</head>
+<body>
+
+  <header class="hero">
+    <img src="https://github.com/alcaeus.png" alt="Andreas Braun" class="hero__avatar">
+    <h1 class="hero__title">Farewell, Andreas! 👋</h1>
+    <p class="hero__subtitle">
+      You've been an incredible colleague, a thoughtful engineer, and a great friend.<br>
+      Here's what the team wants you to know before you go.
+    </p>
+  </header>
+
+  <main>
+    {{ $cards := where site.RegularPages "Section" "cards" }}
+    {{ $colors := slice "yellow" "blue" "green" "pink" "purple" "orange" }}
+    {{ if $cards }}
+      <div class="cards-grid">
+        {{ range $i, $card := $cards }}
+          {{ $color := or $card.Params.color (index $colors (mod $i 6)) }}
+          <article class="card card--{{ $color }}">
+            {{ with $card.Params.emoji }}
+              <div class="card__emoji">{{ . }}</div>
+            {{ end }}
+            <div class="card__message">{{ $card.Content }}</div>
+            <footer class="card__author">
+              {{ with $card.Params.github }}
+                <img
+                  src="https://github.com/{{ . }}.png?size=40"
+                  alt="{{ $card.Params.author }}"
+                  class="card__avatar"
+                >
+              {{ end }}
+              <div class="card__author-info">
+                <strong>{{ $card.Params.author }}</strong>
+                {{ with $card.Params.role }}
+                  <span class="card__role">{{ . }}</span>
+                {{ end }}
+              </div>
+            </footer>
+          </article>
+        {{ end }}
+      </div>
+    {{ else }}
+      <p class="empty-state">No cards yet — be the first to add one!</p>
+    {{ end }}
+  </main>
+
+  <footer class="site-footer">
+    Want to leave a message?
+    <a href="https://github.com/please/farewell/blob/main/CONTRIBUTING.md">See how to add your card</a>.
+  </footer>
+
+</body>
+</html>
