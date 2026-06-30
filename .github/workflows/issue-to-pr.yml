@@ -42,7 +42,8 @@ jobs:
             const message = parseSection(body, 'Your message');
 
             const photoField = parseSection(body, 'Photo');
-            const photoMatch = photoField.match(/!\[.*?\]\((https?:\/\/[^)]+)\)/);
+            const photoMatch = photoField.match(/!\[.*?\]\((https?:\/\/[^)]+)\)/)
+                            || photoField.match(/src="(https?:\/\/[^"]+)"/);
             const photoUrl = photoMatch ? photoMatch[1] : '';
 
             if (!author || !message) {
