@@ -3,7 +3,6 @@ author: "Jérôme Tamarelle"
 role: "Senior Software Engineer, MongoDB"
 github: GromNaN
 color: blue
-emoji: 🚀
 photo: "assets/cards/jerome-tamarelle.jpg"
 ---
 
