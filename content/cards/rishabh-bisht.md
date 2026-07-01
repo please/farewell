@@ -1,6 +1,6 @@
 ---
 author: "Rishabh Bisht"
-github: jmikola
+github: bisht2050
 color: yellow
 emoji: "🏎️ ☀️🏖️"
 photo: "assets/cards/rishabh-bisht.jpg"
