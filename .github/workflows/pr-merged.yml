@@ -1,0 +1,41 @@
+name: Thank contributor on card merge
+
+on:
+  pull_request:
+    types: [closed]
+
+permissions:
+  issues: write
+
+jobs:
+  thank-contributor:
+    if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'card/issue-')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const { owner, repo } = context.repo;
+
+            // Find issue number from PR body "Resolves #N"
+            const match = (pr.body || '').match(/Resolves #(\d+)/);
+            if (!match) return;
+            const issueNumber = parseInt(match[1]);
+
+            // Find the card file among merged files
+            const { data: files } = await github.rest.pulls.listFiles({
+              owner, repo, pull_number: pr.number,
+            });
+            const cardFile = files.find(f =>
+              f.filename.startsWith('content/cards/') && f.filename.endsWith('.md')
+            );
+            if (!cardFile) return;
+
+            const fileUrl = `https://github.com/${owner}/${repo}/blob/main/${cardFile.filename}`;
+
+            await github.rest.issues.createComment({
+              owner, repo,
+              issue_number: issueNumber,
+              body: `Your card is now live on the board! 🎉 Thank you for your message for Andreas.\n\nIf you'd like to make any changes, you can edit your card directly here: [${cardFile.filename}](${fileUrl})`,
+            });
