@@ -3,7 +3,7 @@ author: "Rishabh Bisht"
 github: bisht2050
 color: yellow
 emoji: "🏎️ ☀️🏖️"
-photo: "assets/cards/rishabh-bisht.JPG"
+photo: "assets/cards/rishabh-bisht.jpg"
 weight: 1
 ---
 
