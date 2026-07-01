@@ -35,7 +35,7 @@
       <div class="cards-grid">
         {{ range $i, $card := $cards }}
           {{ $color := or $card.Params.color (index $colors (mod $i 6)) }}
-          <article class="card card--{{ $color }}">
+          <article class="card card--{{ $color }}{{ if gt $card.WordCount 150 }} card--no-rotate{{ end }}">
             {{ with $card.Params.photo }}
               <div class="card__photo">
                 <img src="{{ if hasPrefix . "http" }}{{ . }}{{ else }}{{ . | absURL }}{{ end }}" alt="Photo from {{ $card.Params.author }}">

@@ -141,6 +141,11 @@ body {
   border-radius: 8px 230px 12px 255px / 255px 12px 230px 8px;
 }
 
+.card.card--no-rotate {
+  --r: 0deg;
+}
+
+
 .card.visible {
   opacity: 1;
   transform: rotate(var(--r)) translateY(0);
