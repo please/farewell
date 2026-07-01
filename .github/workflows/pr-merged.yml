@@ -3,13 +3,18 @@ name: Thank contributor on card merge
 on:
   pull_request:
     types: [closed]
+  workflow_dispatch:
+    inputs:
+      pr_numbers:
+        description: 'Comma-separated PR numbers to process'
+        required: true
 
 permissions:
   issues: write
 
 jobs:
   thank-contributor:
-    if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'card/issue-')
+    if: github.event_name == 'pull_request' && github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'card/issue-')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/github-script@v7
@@ -18,12 +23,10 @@ jobs:
             const pr = context.payload.pull_request;
             const { owner, repo } = context.repo;
 
-            // Find issue number from PR body "Resolves #N"
             const match = (pr.body || '').match(/Resolves #(\d+)/);
             if (!match) return;
             const issueNumber = parseInt(match[1]);
 
-            // Find the card file among merged files
             const { data: files } = await github.rest.pulls.listFiles({
               owner, repo, pull_number: pr.number,
             });
@@ -39,3 +42,51 @@ jobs:
               issue_number: issueNumber,
               body: `Your card is now live on the board! 🎉 Thank you for your message for Andreas.\n\nIf you'd like to make any changes, you can edit your card directly here: [${cardFile.filename}](${fileUrl})`,
             });
+
+  backfill:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const prNumbers = '${{ inputs.pr_numbers }}'.split(',').map(s => parseInt(s.trim())).filter(Boolean);
+
+            for (const prNumber of prNumbers) {
+              const { data: pr } = await github.rest.pulls.get({ owner, repo, pull_number: prNumber });
+
+              if (!pr.merged_at) {
+                console.log(`PR #${prNumber} is not merged, skipping.`);
+                continue;
+              }
+              if (!pr.head.ref.startsWith('card/issue-')) {
+                console.log(`PR #${prNumber} branch '${pr.head.ref}' is not a card branch, skipping.`);
+                continue;
+              }
+
+              const match = (pr.body || '').match(/Resolves #(\d+)/);
+              if (!match) {
+                console.log(`PR #${prNumber} has no 'Resolves #N' in body, skipping.`);
+                continue;
+              }
+              const issueNumber = parseInt(match[1]);
+
+              const { data: files } = await github.rest.pulls.listFiles({ owner, repo, pull_number: prNumber });
+              const cardFile = files.find(f =>
+                f.filename.startsWith('content/cards/') && f.filename.endsWith('.md')
+              );
+              if (!cardFile) {
+                console.log(`PR #${prNumber} has no card file, skipping.`);
+                continue;
+              }
+
+              const fileUrl = `https://github.com/${owner}/${repo}/blob/main/${cardFile.filename}`;
+
+              await github.rest.issues.createComment({
+                owner, repo,
+                issue_number: issueNumber,
+                body: `Your card is now live on the board! 🎉 Thank you for your message for Andreas.\n\nIf you'd like to make any changes, you can edit your card directly here: [${cardFile.filename}](${fileUrl})`,
+              });
+              console.log(`Posted thank-you comment on issue #${issueNumber} for PR #${prNumber}.`);
+            }
