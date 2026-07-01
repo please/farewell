@@ -32,8 +32,10 @@
     {{ $cards := where site.RegularPages "Section" "cards" }}
     {{ $colors := slice "yellow" "blue" "green" "pink" "purple" "orange" }}
     {{ if $cards }}
+      {{ $sorted := $cards.ByWeight }}
+
       <div class="cards-grid">
-        {{ range $i, $card := $cards }}
+        {{ range $i, $card := $sorted }}
           {{ $color := or $card.Params.color (index $colors (mod $i 6)) }}
           <article class="card card--{{ $color }}{{ if gt $card.WordCount 150 }} card--no-rotate{{ end }}">
             {{ with $card.Params.photo }}

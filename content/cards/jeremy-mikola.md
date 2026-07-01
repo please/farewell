@@ -4,6 +4,7 @@ github: jmikola
 color: orange
 emoji: "🍉"
 photo: "assets/cards/jeremy-mikola.png"
+weight: 1
 ---
 
 This `please/farewell` repository is a strange alternative to `#sandwiches`. I have so many questions, but it's already 2am and I'm on call tomorrow. That said, some of my best PRs were written in the wee hours of night. So without further ado...
