@@ -28,6 +28,24 @@
     </a>
   </header>
 
+  <section class="player-section">
+    <div class="player" id="player">
+      <div class="player__title">🎵 Auf Wiedersehen, Andreas</div>
+      <div class="player__controls">
+        <button class="player__btn" id="playBtn" aria-label="Play / Pause">
+          <svg class="player__icon player__icon--play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5,3 19,12 5,21"/></svg>
+          <svg class="player__icon player__icon--pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="display:none"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+        </button>
+        <span class="player__time" id="currentTime">0:00</span>
+        <div class="player__bar" id="progressBar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <div class="player__bar-fill" id="progressFill"></div>
+        </div>
+        <span class="player__time" id="duration">—</span>
+      </div>
+      <audio id="audio" src="{{ "assets/auf-wiedersehen-andreas.mp3" | absURL }}" preload="metadata"></audio>
+    </div>
+  </section>
+
   <main id="cards">
     {{ $cards := where site.RegularPages "Section" "cards" }}
     {{ $colors := slice "yellow" "blue" "green" "pink" "purple" "orange" }}
@@ -82,6 +100,57 @@
   </footer>
 
   <script>
+    (function () {
+      const audio       = document.getElementById('audio');
+      const playBtn     = document.getElementById('playBtn');
+      const playIcon    = playBtn.querySelector('.player__icon--play');
+      const pauseIcon   = playBtn.querySelector('.player__icon--pause');
+      const progressBar = document.getElementById('progressBar');
+      const progressFill= document.getElementById('progressFill');
+      const currentTime = document.getElementById('currentTime');
+      const durationEl  = document.getElementById('duration');
+
+      function fmt(s) {
+        const m = Math.floor(s / 60);
+        const sec = Math.floor(s % 60);
+        return m + ':' + String(sec).padStart(2, '0');
+      }
+
+      audio.addEventListener('loadedmetadata', () => {
+        durationEl.textContent = fmt(audio.duration);
+      });
+
+      audio.addEventListener('timeupdate', () => {
+        const pct = audio.duration ? (audio.currentTime / audio.duration) * 100 : 0;
+        progressFill.style.width = pct + '%';
+        progressBar.setAttribute('aria-valuenow', Math.round(pct));
+        currentTime.textContent = fmt(audio.currentTime);
+      });
+
+      audio.addEventListener('ended', () => {
+        playIcon.style.display  = '';
+        pauseIcon.style.display = 'none';
+      });
+
+      playBtn.addEventListener('click', () => {
+        if (audio.paused) {
+          audio.play();
+          playIcon.style.display  = 'none';
+          pauseIcon.style.display = '';
+        } else {
+          audio.pause();
+          playIcon.style.display  = '';
+          pauseIcon.style.display = 'none';
+        }
+      });
+
+      progressBar.addEventListener('click', (e) => {
+        const rect = progressBar.getBoundingClientRect();
+        const pct  = (e.clientX - rect.left) / rect.width;
+        audio.currentTime = pct * audio.duration;
+      });
+    })();
+
     const observer = new IntersectionObserver(
       entries => entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } }),
       { threshold: 0.1 }
